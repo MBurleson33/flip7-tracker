@@ -285,6 +285,7 @@
   .player-row.leader { border-color: var(--accent); }
   .player-row.danger { border-color: var(--accent2); }
   .player-row.winner { border-color: var(--win); animation: winPulse 1.5s ease infinite; }
+  .player-row.pending-final { border-color: rgba(255, 94, 94, 0.5); }
 
   @keyframes winPulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(77,255,145,0.0); }
@@ -317,6 +318,22 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pending-tag {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: rgba(255,94,94,0.15);
+    color: var(--accent2);
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    flex-shrink: 0;
   }
 
   .score-history {
@@ -335,10 +352,20 @@
     font-weight: 500;
   }
 
-  .score-pill.new {
+  .score-pill.latest {
     background: rgba(245,200,66,0.15);
     color: var(--accent);
     animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .score-pill.negative {
+    background: rgba(255,94,94,0.12);
+    color: #ff8a8a;
+  }
+
+  .score-pill.latest.negative {
+    background: rgba(255,94,94,0.2);
+    color: var(--accent2);
   }
 
   @keyframes popIn {
@@ -373,11 +400,12 @@
     transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
+  /* ── SCORE INPUTS ── */
   .score-input-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 0 14px 14px;
+    padding: 0 14px 8px;
   }
 
   .score-input-label {
@@ -393,26 +421,29 @@
     border-radius: 10px;
     overflow: hidden;
     border: 1px solid var(--border);
+    flex: 1;
   }
 
   .stepper-btn {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     background: none;
     border: none;
     color: var(--text);
-    font-size: 18px;
+    font-size: 20px;
     cursor: pointer;
     transition: background 0.15s;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   }
 
   .stepper-btn:active { background: var(--border); }
 
   .stepper-val {
-    width: 44px;
+    flex: 1;
+    min-width: 0;
     text-align: center;
     font-weight: 600;
     font-size: 15px;
@@ -421,16 +452,15 @@
     color: var(--text);
     font-family: 'DM Sans', sans-serif;
     outline: none;
+    padding: 0 4px;
   }
 
-  /* hide number input arrows */
   .stepper-val::-webkit-inner-spin-button,
   .stepper-val::-webkit-outer-spin-button { -webkit-appearance: none; }
   .stepper-val { -moz-appearance: textfield; }
 
   .btn-add-score {
-    flex: 1;
-    padding: 10px 0;
+    padding: 10px 14px;
     border: none;
     border-radius: 10px;
     background: var(--accent);
@@ -440,10 +470,60 @@
     letter-spacing: 1px;
     cursor: pointer;
     transition: transform 0.1s, opacity 0.2s;
+    flex-shrink: 0;
   }
 
   .btn-add-score:active { transform: scale(0.96); }
 
+  .btn-undo {
+    width: 40px;
+    height: 40px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: none;
+    color: var(--muted);
+    font-size: 17px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, color 0.2s;
+    flex-shrink: 0;
+  }
+
+  .btn-undo:hover:not(:disabled) { border-color: var(--accent3); color: var(--accent3); }
+  .btn-undo:active:not(:disabled) { transform: scale(0.94); }
+  .btn-undo:disabled { opacity: 0.25; cursor: not-allowed; }
+
+  /* ── QUICK BUTTONS ── */
+  .quick-btns-row {
+    display: flex;
+    gap: 6px;
+    padding: 0 14px 14px;
+  }
+
+  .quick-btn {
+    flex: 1;
+    padding: 8px 0;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface2);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s, transform 0.1s;
+    text-align: center;
+  }
+
+  .quick-btn:active { transform: scale(0.94); }
+
+  .quick-btn.pos:hover { border-color: var(--accent); color: var(--accent); }
+  .quick-btn.neg:hover { border-color: var(--accent2); color: var(--accent2); }
+  .quick-btn.neg { color: #ff8a8a; }
+
+  /* ── WINNER & BANNERS ── */
   .winner-banner {
     display: none;
     position: fixed;
@@ -559,6 +639,7 @@
 
   .last-turn-banner.show { display: block; }
 
+  /* ── COLOR CLASSES ── */
   .color-0 { background: linear-gradient(135deg, #f5c842, #ff9f1c); color: #000; }
   .color-1 { background: linear-gradient(135deg, #5eaaff, #7c6bff); color: #fff; }
   .color-2 { background: linear-gradient(135deg, #ff5e5e, #ff8a5e); color: #fff; }
@@ -633,10 +714,19 @@
   let gameOver = false;
   let lastRound = false;
   let triggerPlayer = null;
-  let lastRoundRemaining = 0;
+  let pendingFinalTurns = new Set(); // IDs of players who still owe a final turn
+  let playerIdCounter = 0;
 
   const COLORS = ['color-0','color-1','color-2','color-3','color-4','color-5','color-6','color-7'];
   const WIN_SCORE = 200;
+
+  // ── HELPERS ──
+
+  function fmtScore(n) {
+    if (n > 0) return '+' + n;
+    if (n < 0) return String(n);
+    return '0';
+  }
 
   // ── SETUP ──
 
@@ -647,15 +737,14 @@
   function addPlayer() {
     const input = document.getElementById('name-input');
     const name = input.value.trim();
-    if (!name) return;
-    if (players.length >= 8) return;
+    if (!name || players.length >= 8) return;
 
     players.push({
       name,
       total: 0,
       rounds: [],
       colorClass: COLORS[players.length % COLORS.length],
-      id: Date.now() + Math.random()
+      id: 'p' + (++playerIdCounter)
     });
 
     input.value = '';
@@ -666,7 +755,6 @@
 
   function removePlayer(id) {
     players = players.filter(p => p.id !== id);
-    // Reassign colors
     players.forEach((p, i) => p.colorClass = COLORS[i % COLORS.length]);
     renderPlayerList();
     updateStartBtn();
@@ -681,7 +769,7 @@
       chip.innerHTML = `
         <div class="player-avatar ${p.colorClass}">${p.name[0].toUpperCase()}</div>
         <span class="player-chip-name">${p.name}</span>
-        <button class="btn-remove" onclick="removePlayer(${p.id})">×</button>
+        <button class="btn-remove" onclick="removePlayer('${p.id}')">×</button>
       `;
       list.appendChild(chip);
     });
@@ -698,7 +786,7 @@
     gameOver = false;
     lastRound = false;
     triggerPlayer = null;
-    lastRoundRemaining = 0;
+    pendingFinalTurns = new Set();
     players.forEach(p => { p.total = 0; p.rounds = []; });
 
     document.getElementById('setup-screen').style.display = 'none';
@@ -711,7 +799,7 @@
   }
 
   function renderGame() {
-    document.getElementById('round-badge').textContent = `Round ${round}`;
+    document.getElementById('round-badge').textContent = 'Round ' + round;
 
     const maxScore = Math.max(...players.map(p => p.total), 1);
     const progressPct = Math.min((maxScore / WIN_SCORE) * 100, 100);
@@ -732,26 +820,59 @@
     sorted.forEach((p, idx) => {
       const isLeader = idx === 0 && p.total > 0;
       const isDanger = p.total >= WIN_SCORE;
-      const isWinner = gameOver && p === sorted[0];
+      const isWinner = gameOver && idx === 0;
+      const isPending = lastRound && pendingFinalTurns.has(p.id);
+
+      let rowClass = 'player-row';
+      if (isWinner)       rowClass += ' winner';
+      else if (isLeader)  rowClass += ' leader';
+      else if (isDanger)  rowClass += ' danger';
+      else if (isPending) rowClass += ' pending-final';
 
       const rowEl = document.createElement('div');
-      rowEl.className = 'player-row' + (isWinner ? ' winner' : isLeader ? ' leader' : isDanger ? ' danger' : '');
-      rowEl.id = 'row-' + p.id;
+      rowEl.className = rowClass;
 
-      const pillsHTML = p.rounds.map((r, i) =>
-        `<span class="score-pill${i === p.rounds.length - 1 ? ' new' : ''}">+${r}</span>`
-      ).join('');
+      const pillsHTML = p.rounds.map((r, i) => {
+        const isLatest = i === p.rounds.length - 1;
+        const isNeg = r < 0;
+        let cls = 'score-pill';
+        if (isLatest) cls += ' latest';
+        if (isNeg) cls += ' negative';
+        return `<span class="${cls}">${fmtScore(r)}</span>`;
+      }).join('');
 
       const pct = Math.min((p.total / WIN_SCORE) * 100, 100);
       const barColor = isWinner ? 'var(--win)' : isLeader ? 'var(--accent)' : isDanger ? 'var(--accent2)' : 'var(--accent3)';
       const scoreClass = isWinner ? 'winner-score' : isLeader ? 'leader-score' : isDanger ? 'danger-score' : '';
+
+      const pendingTagHTML = isPending ? '<span class="pending-tag">Final turn</span>' : '';
+
+      const inputsHTML = !gameOver ? `
+        <div class="score-input-row">
+          <div class="score-stepper">
+            <button class="stepper-btn" onclick="stepScore('${p.id}',-1)">−</button>
+            <input class="stepper-val" type="number" id="input-${p.id}" value="0"
+              onfocus="this.select()"
+              oninput="clampInput(this)">
+            <button class="stepper-btn" onclick="stepScore('${p.id}',1)">+</button>
+          </div>
+          <button class="btn-add-score" onclick="addScore('${p.id}')">ADD</button>
+          <button class="btn-undo" onclick="undoScore('${p.id}')" ${p.rounds.length === 0 ? 'disabled' : ''} title="Undo last entry">↩</button>
+        </div>
+        <div class="quick-btns-row">
+          <button class="quick-btn pos" onclick="quickAdd('${p.id}', 7)">+7</button>
+          <button class="quick-btn pos" onclick="quickAdd('${p.id}', 10)">+10</button>
+          <button class="quick-btn pos" onclick="quickAdd('${p.id}', 15)">+15</button>
+          <button class="quick-btn neg" onclick="quickAdd('${p.id}', -10)">−10</button>
+        </div>
+      ` : '';
 
       rowEl.innerHTML = `
         <div class="player-row-main">
           <div class="rank-num${idx === 0 ? ' first' : ''}">${idx + 1}</div>
           <div class="player-avatar ${p.colorClass}">${p.name[0].toUpperCase()}</div>
           <div class="player-info">
-            <div class="player-name">${p.name}</div>
+            <div class="player-name">${p.name} ${pendingTagHTML}</div>
             <div class="score-history">${pillsHTML}</div>
           </div>
           <div class="total-score ${scoreClass}">${p.total}</div>
@@ -761,69 +882,123 @@
             <div class="score-bar-fill" style="width:${pct}%;background:${barColor}"></div>
           </div>
         </div>
-        ${!gameOver ? `
-        <div class="score-input-row">
-          <span class="score-input-label">Add pts:</span>
-          <div class="score-stepper">
-            <button class="stepper-btn" onclick="stepScore('${p.id}',-1)">−</button>
-            <input class="stepper-val" type="number" id="input-${p.id}" value="0" min="0" max="999" onfocus="clearOnFocus(this)" onblur="restoreOnBlur(this)">
-            <button class="stepper-btn" onclick="stepScore('${p.id}',1)">+</button>
-          </div>
-          <button class="btn-add-score" onclick="addScore('${p.id}')">ADD</button>
-        </div>` : ''}
+        ${inputsHTML}
       `;
 
       area.appendChild(rowEl);
     });
   }
 
-  function clearOnFocus(el) {
-    if (el.value === '0') el.value = '';
-  }
-
-  function restoreOnBlur(el) {
-    if (el.value === '') el.value = '0';
+  function clampInput(el) {
+    let v = parseInt(el.value);
+    if (isNaN(v)) el.value = '';
+    else if (v > 9999) el.value = 9999;
+    else if (v < -9999) el.value = -9999;
   }
 
   function stepScore(playerId, delta) {
     const input = document.getElementById('input-' + playerId);
     let val = parseInt(input.value) || 0;
-    val = Math.max(0, val + delta);
-    input.value = val;
+    input.value = val + delta;
+    input.focus();
+    input.select();
   }
+
+  // ── ADD SCORE ──
 
   function addScore(playerId) {
     if (gameOver) return;
-    const p = players.find(x => x.id == playerId);
+    const p = players.find(x => x.id === playerId);
     if (!p) return;
 
     const input = document.getElementById('input-' + playerId);
-    const pts = parseInt(input.value) || 0;
-    if (pts === 0) return;
+    const pts = parseInt(input.value);
+    if (isNaN(pts) || pts === 0) {
+      input.select();
+      return;
+    }
 
+    applyScore(p, pts);
+    input.value = 0;
+  }
+
+  function quickAdd(playerId, pts) {
+    if (gameOver) return;
+    const p = players.find(x => x.id === playerId);
+    if (!p) return;
+    applyScore(p, pts);
+  }
+
+  function applyScore(p, pts) {
     p.rounds.push(pts);
     p.total += pts;
-    input.value = 0;
 
-    // Check for last-round trigger
     if (!lastRound && p.total >= WIN_SCORE) {
+      // This player triggered the final round
       lastRound = true;
       triggerPlayer = p;
-      lastRoundRemaining = players.length - 1;
-    } else if (lastRound && p !== triggerPlayer) {
-      lastRoundRemaining--;
-      if (lastRoundRemaining <= 0) {
+
+      // Everyone who has played fewer rounds than the trigger player still needs a turn
+      const triggerRoundCount = p.rounds.length;
+      pendingFinalTurns = new Set(
+        players
+          .filter(x => x.id !== p.id && x.rounds.length < triggerRoundCount)
+          .map(x => x.id)
+      );
+
+      // If trigger player went last (no one behind them), end immediately
+      if (pendingFinalTurns.size === 0) {
+        endGame();
+        return;
+      }
+    } else if (lastRound && pendingFinalTurns.has(p.id)) {
+      pendingFinalTurns.delete(p.id);
+      if (pendingFinalTurns.size === 0) {
         endGame();
         return;
       }
     }
 
-    // Increment round when all players have equal number of rounds
+    // Advance round counter
     const minRounds = Math.min(...players.map(x => x.rounds.length));
-    if (minRounds > round - 1) round = minRounds + 1;
+    if (minRounds >= round) round = minRounds + 1;
 
     renderGame();
   }
+
+  // ── UNDO ──
+
+  function undoScore(playerId) {
+    if (gameOver) return;
+    const p = players.find(x => x.id === playerId);
+    if (!p || p.rounds.length === 0) return;
+
+    const lastPts = p.rounds[p.rounds.length - 1];
+    p.rounds.pop();
+    p.total -= lastPts;
+
+    // If undoing the trigger player's score that started the final round
+    if (lastRound && triggerPlayer && triggerPlayer.id === p.id && p.total < WIN_SCORE) {
+      lastRound = false;
+      triggerPlayer = null;
+      pendingFinalTurns = new Set();
+    }
+
+    // If undoing a player who had already taken their final turn, put them back
+    if (lastRound && triggerPlayer && triggerPlayer.id !== p.id) {
+      if (!pendingFinalTurns.has(p.id)) {
+        pendingFinalTurns.add(p.id);
+      }
+    }
+
+    // Recalculate round
+    const minRounds = Math.min(...players.map(x => x.rounds.length));
+    round = Math.max(1, minRounds + 1);
+
+    renderGame();
+  }
+
+  // ── END GAME ──
 
   function endGame() {
     gameOver = true;
@@ -856,7 +1031,7 @@
     gameOver = false;
     lastRound = false;
     triggerPlayer = null;
-    lastRoundRemaining = 0;
+    pendingFinalTurns = new Set();
     renderGame();
   }
 
@@ -871,7 +1046,7 @@
     }
   }
 
-  // PWA manifest inline
+  // ── PWA MANIFEST (lightweight) ──
   const manifest = {
     name: "Flip 7 Score Tracker",
     short_name: "Flip 7",
@@ -882,25 +1057,10 @@
     icons: []
   };
   const blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
-  const manifestURL = URL.createObjectURL(blob);
   const link = document.createElement('link');
   link.rel = 'manifest';
-  link.href = manifestURL;
+  link.href = URL.createObjectURL(blob);
   document.head.appendChild(link);
-
-  // Service worker for PWA
-  if ('serviceWorker' in navigator) {
-    const swCode = `
-      self.addEventListener('install', e => e.waitUntil(
-        caches.open('flip7-v1').then(c => c.add('/'))
-      ));
-      self.addEventListener('fetch', e => e.respondWith(
-        caches.match(e.request).then(r => r || fetch(e.request))
-      ));
-    `;
-    const swBlob = new Blob([swCode], {type:'text/javascript'});
-    navigator.serviceWorker.register(URL.createObjectURL(swBlob));
-  }
 </script>
 </body>
 </html>
